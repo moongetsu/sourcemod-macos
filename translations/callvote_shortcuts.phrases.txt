@@ -1,0 +1,88 @@
+"Phrases"
+{
+    "Prefix"
+    {
+        "en"    "{red}[SM]{default}"
+    }
+
+    "PluginDescription"
+    {
+        "en"    "Chat shortcuts and menus for CS:GO votes"
+    }
+
+    "CmdRestartGameDesc"
+    {
+        "en"    "Restart game vote"
+    }
+
+    "CmdSwapTeamsDesc"
+    {
+        "en"    "Swap teams vote"
+    }
+
+    "CmdTimeoutDesc"
+    {
+        "en"    "Timeout vote"
+    }
+
+    "CmdScrambleTeamsDesc"
+    {
+        "en"    "Scramble teams vote"
+    }
+
+    "CmdNextMapDesc"
+    {
+        "en"    "Next map vote"
+    }
+
+    "CmdChangeMapDesc"
+    {
+        "en"    "Change map vote"
+    }
+
+    "CmdVoteKickDesc"
+    {
+        "en"    "Vote kick player"
+    }
+
+    "TimeoutDisabled"
+    {
+        "en"    "Timeouts are disabled on this mode."
+    }
+
+    "MapNotFound"
+    {
+        "#format"   "{1:s}"
+        "en"        "Map not found: {green}{1}"
+    }
+
+    "PlayerDisconnected"
+    {
+        "en"    "Player is no longer in the server."
+    }
+
+    "MenuNextMapTitle"
+    {
+        "en"    "Vote Next Map:\n "
+    }
+
+    "MenuChangeMapTitle"
+    {
+        "en"    "Vote Change Map:\n "
+    }
+
+    "MenuKickTitle"
+    {
+        "en"    "Vote Kick Player:\n "
+    }
+
+    "NoMapsFound"
+    {
+        "en"    "No maps found"
+    }
+
+    "NoPlayersFound"
+    {
+        "en"    "No players found"
+    }
+}

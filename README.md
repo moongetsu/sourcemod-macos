@@ -4,15 +4,15 @@
   SourceMod macOS Compiler
 </h1>
 <p align="center">
-  <b>Native Universal (Apple Silicon ARM64 & Intel x86_64) SourcePawn compiler toolkit for macOS.</b><br>
-  <i>Build, compile, and develop SourceMod plugins on Mac with zero setup friction.</i>
+  <b>Multi-Version Native Universal (Apple Silicon ARM64 & Intel x86_64) SourcePawn Compiler Toolkit for macOS.</b><br>
+  <i>Build, compile, and switch between SourceMod 1.10, 1.11, 1.12, and 1.13 on Mac effortlessly.</i>
 </p>
 
 <p align="center">
   <a href="#-quick-install">⚡ Quick Install</a> •
-  <a href="#-features">✨ Features</a> •
-  <a href="#-workspace-guide">🛠 Workspace Guide</a> •
-  <a href="#-building-from-source">🏗 Building from Source</a> •
+  <a href="#-supported-versions">🔢 Versions</a> •
+  <a href="#-version-switcher">🔄 Switcher</a> •
+  <a href="#-workspace-guide">🛠 Usage</a> •
   <a href="#-project-structure">📂 Structure</a>
 </p>
 
@@ -20,58 +20,52 @@
 
 ## 🎬 About
 
-**SourceMod macOS Compiler** provides a pre-built, native Mach-O universal binary of the **SourcePawn Compiler (`spcomp 1.12`)** and an automated build system tailored for macOS.
+**SourceMod macOS Compiler** provides pre-built, native Mach-O universal binaries of the **SourcePawn Compiler (`spcomp`)** and standard headers for **SourceMod 1.10, 1.11, 1.12, and 1.13**.
 
-It fixes existing upstream build conflicts with modern Apple Clang (such as `zutil.h` macro redefinitions and C++17 deprecations), bundles all standard SourceMod `.inc` files, and includes VS Code task automation.
+It fixes upstream Apple Clang build errors, provides instant version switching with `./sm-switch.sh`, and integrates with VS Code.
 
 > [!NOTE]
 > **Compatibility:**
 > - **Apple Silicon** — M1, M2, M3, M4 (Native ARM64, no Rosetta required).
 > - **Intel Macs** — macOS 10.15 (Catalina) and newer (x86_64).
-> - **Target Servers** — Output `.smx` plugins are platform-independent bytecode and run on all Linux and Windows game servers (CS:S, CS:GO, TF2, L4D2, HL2:DM, DoD:S, etc.).
+> - **Target Servers** — Output `.smx` plugins run on all Linux and Windows game servers.
 
 ---
 
-## 🚀 Features
+## 🔢 Supported Versions
 
-- **Native Universal Binary:** Single fat Mach-O executable containing native 64-bit slices for both Apple Silicon and Intel x86_64.
-- **Pre-Bundled Standard Includes:** Includes `sourcemod.inc`, `sdktools.inc`, `sdkhooks.inc`, `cstrike.inc`, `tf2.inc`, `dbi.inc`, etc.
-- **IDE Build Task:** Pre-configured `.vscode/tasks.json` supporting <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> with inline error & warning matching.
-- **Automated CI/CD:** GitHub Actions release workflow that automatically compiles and packages `.tar.gz` and `.zip` distribution bundles.
-- **Clean One-Line Installer:** Setup `spcomp` system-wide with a single terminal command.
+| Version | Status | Description |
+| :--- | :--- | :--- |
+| **SourceMod 1.12** | **Standard (Default)** | Current recommended version for CS:GO, TF2, etc. |
+| **SourceMod 1.13** | **Next-Gen / Dev** | Latest SourceMod master branch builds. |
+| **SourceMod 1.11** | **LTS / Stable** | Long-term support branch. |
+| **SourceMod 1.10** | **Legacy** | For older servers and legacy environments. |
 
 ---
 
-## 📦 Installation
-
-### Using the Installer (Recommended)
-
-Run the one-line setup in your macOS terminal:
+## ⚡ Quick Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/moongetsu/sourcemod-macos/main/install.sh | bash
-```
+# Clone the workspace
+git clone https://github.com/moongetsu/sourcemod-macos.git
+cd sourcemod-macos
 
-This installs `spcomp` and headers to `~/.sourcemod-mac` and adds the binary path to your `~/.zshrc`.
+# Quick setup
+./setup.sh
+```
 
 ---
 
-### Manual Installation
+## 🔄 Version Switcher
 
-<details>
-<summary><b>Download Archive</b></summary>
+Switch the active compiler and default includes on-the-fly:
 
-1. Download the latest `sourcemod-compiler-macos-universal.tar.gz` from the [Releases](../../releases) page.
-2. Extract the archive:
-   ```bash
-   tar -xzf sourcemod-compiler-macos-universal.tar.gz
-   ```
-3. Run the compiler:
-   ```bash
-   ./bin/spcomp your_plugin.sp -iinclude -o your_plugin.smx
-   ```
-
-</details>
+```bash
+./sm-switch.sh 1.10    # Switch to SourceMod 1.10
+./sm-switch.sh 1.11    # Switch to SourceMod 1.11
+./sm-switch.sh 1.12    # Switch to SourceMod 1.12
+./sm-switch.sh 1.13    # Switch to SourceMod 1.13
+```
 
 ---
 
@@ -79,75 +73,54 @@ This installs `spcomp` and headers to `~/.sourcemod-mac` and adds the binary pat
 
 ### Directory Layout
 
-- Put your `.sp` plugins inside [`plugins/`](plugins/)
-- Put custom 3rd-party `.inc` headers inside [`include/`](include/)
-- Compiled `.smx` files are generated in [`compiled/`](compiled/)
+- Put your `.sp` plugins in [`plugins/`](plugins/)
+- Put custom `.inc` files in [`include/`](include/)
+- Compiled `.smx` binaries are output to [`compiled/`](compiled/)
 
 ### Compiling Plugins
 
-#### Using the Terminal:
-
 ```bash
-# Compile all plugins in plugins/
+# Compile with active version
 ./compile.sh
 
-# Compile a single plugin
+# Compile a single file
 ./compile.sh plugins/sample.sp
+
+# Override compiler version for a single build
+./compile.sh -v 1.10 plugins/sample.sp
 ```
-
-#### Using VS Code / Antigravity:
-
-1. Open any `.sp` file (e.g. [`plugins/sample.sp`](plugins/sample.sp)).
-2. Press <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> (or select **Terminal > Run Build Task**).
-3. Any syntax errors or compilation warnings will appear directly in the **Problems** tab.
-
----
-
-## 🏗 Building from Source
-
-To build the native compiler binary locally:
-
-1. Ensure Xcode Command Line Tools are installed:
-   ```bash
-   xcode-select --install
-   ```
-2. Run the automated build script:
-   ```bash
-   chmod +x ./scripts/build-spcomp-macos.sh
-   ./scripts/build-spcomp-macos.sh
-   ```
-
-The script automatically fetches AMBuild, pulls the latest SourceMod branch, applies modern macOS Clang patches, and produces the fat Mach-O binary in `bin/spcomp`.
 
 ---
 
 ## 📂 Project Structure
 
 ```text
-├── .github/
-│   └── workflows/
-│       └── build-release.yml     # Automated CI/CD Release Pipeline
-├── .vscode/
-│   └── tasks.json                # VS Code Task (Cmd + Shift + B)
-├── bin/
-│   └── spcomp                    # Universal Mach-O macOS Binary
-├── compiled/                     # Output directory for .smx plugins
-├── include/                      # Standard SourceMod 1.12 Includes
-├── plugins/                      # Plugin source files (.sp)
-│   └── sample.sp                 # Sample test plugin
+├── .github/workflows/
+│   └── build-release.yml     # Multi-version CI Matrix Pipeline (1.10 - 1.13)
+├── bin/                      # Universal Mach-O macOS binaries
+│   ├── spcomp                # Active compiler symlink / binary
+│   ├── spcomp-1.10           # SourceMod 1.10 compiler
+│   ├── spcomp-1.11           # SourceMod 1.11 compiler
+│   ├── spcomp-1.12           # SourceMod 1.12 compiler
+│   └── spcomp-1.13           # SourceMod 1.13 compiler
+├── include/                  # Standard Includes organized by version
+│   ├── 1.10/
+│   ├── 1.11/
+│   ├── 1.12/
+│   └── 1.13/
+├── plugins/                  # SourcePawn plugin source files (.sp)
 ├── scripts/
-│   └── build-spcomp-macos.sh     # Standalone Universal compiler builder
-├── compile.sh                    # Local batch / single compiler script
-├── install.sh                    # One-line global installer
-└── README.md
+│   └── build-spcomp-macos.sh # Multi-version builder script
+├── sm-switch.sh              # Instant version switcher CLI
+├── setup.sh                  # Setup script
+└── compile.sh                # Fast build script with -v flag
 ```
 
 ---
 
 <p align="center">
   <img src="https://badgen.net/badge/Platform/macOS%20Universal/black?icon=apple" alt="macOS" />
-  <img src="https://badgen.net/badge/Architecture/ARM64%20%2B%20x86__64/green" alt="Architecture" />
+  <img src="https://badgen.net/badge/Versions/1.10%20%7C%201.11%20%7C%201.12%20%7C%201.13/green" alt="Versions" />
   <img src="https://badgen.net/badge/Language/SourcePawn%20%2F%20C%2B%2B/blue" alt="Language" />
-  <img src="https://badgen.net/badge/SourceMod/1.12/orange" alt="SourceMod" />
   <img src="https://badgen.net/badge/License/GPL--3.0/yellow" alt="License" />
 </p>
