@@ -99,7 +99,7 @@ cd "$SP_DIR"
 
 if [ "$SM_VER" = "1.10" ]; then
     cd "$BUILD_DIR"
-    python3 ../configure.py --targets=x86_64,arm64
+    python3 ../configure.py --enable-optimize
 else
     python3 configure.py --out build-macos --targets=x86_64,arm64
     cd "$BUILD_DIR"
@@ -109,18 +109,31 @@ ambuild
 
 # 5. Collect outputs
 echo "🚚 [5/5] Packaging binary and includes for $SM_VER..."
-SPCOMP_UNIVERSAL="$BUILD_DIR/spcomp/mac-universal/spcomp"
-if [ ! -f "$SPCOMP_UNIVERSAL" ]; then
-    SPCOMP_UNIVERSAL="$BUILD_DIR/spcomp/spcomp"
+SPCOMP_FOUND=""
+for candidate in \
+    "$BUILD_DIR/spcomp/mac-universal/spcomp" \
+    "$BUILD_DIR/spcomp/spcomp" \
+    "$BUILD_DIR/spcomp/mac-arm64/spcomp" \
+    "$BUILD_DIR/spcomp/mac-x86_64/spcomp" \
+    "$BUILD_DIR/spcomp/Release/spcomp"; do
+    if [ -f "$candidate" ]; then
+        SPCOMP_FOUND="$candidate"
+        break
+    fi
+done
+
+if [ -z "$SPCOMP_FOUND" ]; then
+    echo "Searching for spcomp in $BUILD_DIR..."
+    SPCOMP_FOUND=$(find "$BUILD_DIR" -name "spcomp" -type f | head -n 1)
 fi
 
-if [ ! -f "$SPCOMP_UNIVERSAL" ]; then
-    echo "❌ Error: Compiled spcomp not found at $SPCOMP_UNIVERSAL"
+if [ -z "$SPCOMP_FOUND" ] || [ ! -f "$SPCOMP_FOUND" ]; then
+    echo "❌ Error: Compiled spcomp not found in $BUILD_DIR"
     exit 1
 fi
 
 mkdir -p "$OUTPUT_DIR/bin" "$OUTPUT_DIR/include/$SM_VER"
-cp "$SPCOMP_UNIVERSAL" "$OUTPUT_DIR/bin/spcomp-$SM_VER"
+cp "$SPCOMP_FOUND" "$OUTPUT_DIR/bin/spcomp-$SM_VER"
 chmod +x "$OUTPUT_DIR/bin/spcomp-$SM_VER"
 
 # Download matching standard includes
