@@ -45,6 +45,13 @@ It fixes upstream Apple Clang build errors, provides instant version switching w
 
 ## ⚡ Quick Install
 
+### Option 1: Via Homebrew (Recommended)
+```bash
+brew tap moongetsu/tap
+brew install spcomp
+```
+
+### Option 2: Clone the Workspace
 ```bash
 # Clone the workspace
 git clone https://github.com/moongetsu/sourcemod-macos.git
