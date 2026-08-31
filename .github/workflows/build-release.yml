@@ -26,8 +26,9 @@ jobs:
 
       - name: Test compiled binary
         run: |
-          ./dist/bin/spcomp
           file ./dist/bin/spcomp
+          ./dist/bin/spcomp ./plugins/sample.sp -i./dist/include -o./sample.smx
+          ls -la ./sample.smx
 
       - name: Create release archive
         run: |
