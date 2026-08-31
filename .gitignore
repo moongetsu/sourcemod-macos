@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Temp / Build
+build-tmp/
+dist/
+sm-repo/
+sm112-repo/
+sp-build/
+ambuild/
+
+# Output
+compiled/*.smx

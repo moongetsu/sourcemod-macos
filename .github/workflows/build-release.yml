@@ -1,0 +1,55 @@
+name: Build macOS Universal spcomp Release
+
+on:
+  push:
+    branches: [ main, master ]
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Build macOS spcomp & includes
+        run: |
+          chmod +x ./scripts/build-spcomp-macos.sh
+          ./scripts/build-spcomp-macos.sh 1.12-dev ./build-tmp ./dist
+
+      - name: Test compiled binary
+        run: |
+          ./dist/bin/spcomp
+          file ./dist/bin/spcomp
+
+      - name: Create release archive
+        run: |
+          cd dist
+          tar -czf ../sourcemod-compiler-macos-universal.tar.gz bin/ include/
+          zip -r ../sourcemod-compiler-macos-universal.zip bin/ include/
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sourcemod-compiler-macos-universal
+          path: |
+            sourcemod-compiler-macos-universal.tar.gz
+            sourcemod-compiler-macos-universal.zip
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            sourcemod-compiler-macos-universal.tar.gz
+            sourcemod-compiler-macos-universal.zip
+          draft: false
+          prerelease: false
+          generate_release_notes: true
