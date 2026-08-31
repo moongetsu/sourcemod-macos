@@ -89,6 +89,9 @@ if [ -f "$AMBUILDSCRIPT" ]; then
     perl -pi -e "s/'-Werror',/'-Wno-error',\n            '-Wno-deprecated-declarations',\n            '-Wno-nonnull',/g" "$AMBUILDSCRIPT"
     perl -pi -e "s/\['-std=c\+\+17'\]/\['-std=c\+\+17', '-Wno-deprecated-declarations', '-Wno-nonnull'\]/g" "$AMBUILDSCRIPT"
     perl -pi -e "s/\['-std=c\+\+20'\]/\['-std=c\+\+20', '-Wno-deprecated-declarations', '-Wno-nonnull'\]/g" "$AMBUILDSCRIPT"
+    perl -pi -e "s/'-msse',//g" "$AMBUILDSCRIPT"
+    perl -pi -e 's/have_gcc = cxx\.family is '\''gcc'\''/have_gcc = cxx.family == '\''gcc'\''/g' "$AMBUILDSCRIPT"
+    perl -pi -e 's/cxx\.family is /cxx.family == /g' "$AMBUILDSCRIPT"
 fi
 
 # 4. Build Universal Binary
