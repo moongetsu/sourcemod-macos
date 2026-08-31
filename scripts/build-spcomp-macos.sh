@@ -87,10 +87,9 @@ fi
 # 6. Configure & Build Universal Binary
 echo "⚙️  [4/5] Configuring and building Universal (x86_64 + arm64) spcomp..."
 BUILD_DIR="$SP_DIR/build-macos"
-mkdir -p "$BUILD_DIR"
+cd "$SP_DIR"
+python3 configure.py --out build-macos --targets=x86_64,arm64
 cd "$BUILD_DIR"
-
-python3 ../configure.py --out build-macos --targets=x86_64,arm64
 ambuild
 
 # 7. Collect binaries and includes
