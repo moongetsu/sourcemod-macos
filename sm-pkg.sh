@@ -18,24 +18,22 @@ show_help() {
     echo "Usage: ./sm-pkg.sh <command> [package_name / url]"
     echo ""
     echo "Commands:"
-    echo "  install <pkg>   Install a popular include or direct URL"
+    echo "  install <pkg>   Install a popular include library or direct URL"
     echo "  remove <pkg>    Remove an installed package"
     echo "  list            List currently installed packages"
     echo "  search [query]  Search curated package registry"
     echo ""
-    echo "Curated Packages:"
-    echo "  • multicolors      Multi-Colors chat formatting library"
-    echo "  • morecolors       MoreColors chat library (Doctor McKay)"
-    echo "  • autoexecconfig   Automatic config generator by Impact"
-    echo "  • ripext           REST in Pawn (HTTP / JSON extension)"
-    echo "  • steamworks       SteamWorks native include"
-    echo "  • ptah             PTAH extension includes"
-    echo "  • sourcecolors     SourceColors library"
-    echo "  • discord          Discord Webhook integration"
+    echo "Categories of Curated Packages:"
+    echo "  🎨 Chat & Colors:     multicolors, morecolors, sourcecolors, cstrike_colors"
+    echo "  ⚙️ Utilities & Stocks: smlib, autoexecconfig, updater, smjansson, json"
+    echo "  🌐 Web & Network:      ripext, steamworks, discord"
+    echo "  🧠 Low-Level & Memory: sourcescramble, dhooks, collisionhook, sendproxy"
+    echo "  🎮 Game Extensions:   ptah, tf2items"
     echo ""
     echo "Examples:"
-    echo "  ./sm-pkg.sh install autoexecconfig"
+    echo "  ./sm-pkg.sh install smlib"
     echo "  ./sm-pkg.sh install multicolors"
+    echo "  ./sm-pkg.sh install ripext"
     echo "  ./sm-pkg.sh install https://example.com/myinclude.inc"
     echo ""
 }
@@ -50,13 +48,13 @@ fi
 
 case "$CMD" in
     list)
-        echo "📦 Installed Packages:"
+        echo "📦 Installed Packages in $INCLUDE_DIR:"
         if [ -s "$TRACK_FILE" ]; then
             cat "$TRACK_FILE" | while read -r line; do
                 echo "  • $line"
             done
         else
-            echo "  (No packages installed yet. Run: ./sm-pkg.sh search)"
+            echo "  (No packages tracked yet. Run: ./sm-pkg.sh search)"
         fi
         echo ""
         ;;
@@ -66,14 +64,23 @@ case "$CMD" in
         echo "🔍 Available Curated Packages:"
         echo ""
         cat << 'EOF' | grep -i "${QUERY}" || echo "No packages matched '$QUERY'"
-multicolors      - Multi-Colors chat formatting library (Bara20)
-morecolors       - MoreColors chat library (Doctor McKay)
-autoexecconfig   - Automatic config file generator (Impact)
-ripext           - REST in Pawn (HTTP & JSON Client)
-steamworks       - SteamWorks Extension Include
-ptah             - PTAH CS:GO Extension Include
-sourcecolors     - Lightweight color formatting library
-discord          - Discord Webhook integration include
+multicolors      - Multi-Colors chat formatting library with CS:GO/MoreColors drivers (Bara20)
+morecolors       - MoreColors chat formatting library (Doctor McKay)
+sourcecolors     - Lightweight cross-game color formatting library (Flyflo)
+smlib            - SourceMod Library with 300+ helper stocks and utilities (bcserv)
+autoexecconfig   - Automatic config file generator and cvar synchronizer (Impact)
+updater          - In-game automated plugin updater system (GoD-Tony/DoctorMcKay)
+smjansson        - High-performance Jansson JSON parsing library for SourceMod
+json             - Pure SourcePawn JSON encoder/decoder (clugg/sm-json)
+ripext           - REST in Pawn: full HTTP client & JSON toolkit (ErikMinekus)
+steamworks       - Native SteamWorks extension include (KyleSanderson)
+discord          - Discord Webhooks and Rich Embed integration library (CrazyHackGMod)
+sourcescramble   - Dynamic memory patcher and detour manager (nosoop)
+dhooks           - Dynamic Hooks extension header for detour and vtable hooks
+collisionhook    - Entity collision override hook extension (nosoop/AlliedMods)
+sendproxy        - SendProp and DataMap proxy manipulation extension include
+ptah             - PTAH CS:GO comprehensive engine extension includes (komashchenko)
+tf2items         - TF2Items native attribute management extension (Asherkin)
 EOF
         echo ""
         ;;
@@ -92,6 +99,7 @@ EOF
             curl -sL "$PKG" -o "$INCLUDE_DIR/$FILENAME"
             echo "$FILENAME (Custom URL)" >> "$TRACK_FILE"
             echo "✅ Installed: include/$FILENAME"
+            sort -u "$TRACK_FILE" -o "$TRACK_FILE"
             exit 0
         fi
 
@@ -112,10 +120,33 @@ EOF
                 echo "✅ Installed: include/morecolors.inc"
                 ;;
 
+            sourcecolors)
+                curl -sL "https://raw.githubusercontent.com/Flyflo/SourceColors/master/addons/sourcemod/scripting/include/sourcecolors.inc" -o "$INCLUDE_DIR/sourcecolors.inc"
+                echo "sourcecolors" >> "$TRACK_FILE"
+                echo "✅ Installed: include/sourcecolors.inc"
+                ;;
+
+            smlib)
+                echo "Fetching complete SMLib stock library..."
+                mkdir -p "$INCLUDE_DIR/smlib"
+                curl -sL "https://raw.githubusercontent.com/bcserv/smlib/master/scripting/include/smlib.inc" -o "$INCLUDE_DIR/smlib.inc"
+                for sub in arrays clients colors debug entities effects files game general math objects menus server strings vehicles vhash weapons; do
+                    curl -sL "https://raw.githubusercontent.com/bcserv/smlib/master/scripting/include/smlib/$sub.inc" -o "$INCLUDE_DIR/smlib/$sub.inc" 2>/dev/null || true
+                done
+                echo "smlib" >> "$TRACK_FILE"
+                echo "✅ Installed: smlib.inc + smlib/ stock library modules"
+                ;;
+
             autoexecconfig)
                 curl -sL "https://raw.githubusercontent.com/Impact123/AutoExecConfig/master/autoexecconfig.inc" -o "$INCLUDE_DIR/autoexecconfig.inc"
                 echo "autoexecconfig" >> "$TRACK_FILE"
                 echo "✅ Installed: include/autoexecconfig.inc"
+                ;;
+
+            updater)
+                curl -sL "https://raw.githubusercontent.com/DoctorMcKay/sourcemod-plugins/master/scripting/include/updater.inc" -o "$INCLUDE_DIR/updater.inc"
+                echo "updater" >> "$TRACK_FILE"
+                echo "✅ Installed: include/updater.inc"
                 ;;
 
             ripext)
@@ -124,22 +155,22 @@ EOF
                 echo "✅ Installed: include/ripext.inc"
                 ;;
 
+            json)
+                curl -sL "https://raw.githubusercontent.com/clugg/sm-json/master/scripting/include/json.inc" -o "$INCLUDE_DIR/json.inc"
+                echo "json" >> "$TRACK_FILE"
+                echo "✅ Installed: include/json.inc"
+                ;;
+
+            smjansson)
+                curl -sL "https://raw.githubusercontent.com/thraaawn/SMJansson/master/scripting/include/smjansson.inc" -o "$INCLUDE_DIR/smjansson.inc"
+                echo "smjansson" >> "$TRACK_FILE"
+                echo "✅ Installed: include/smjansson.inc"
+                ;;
+
             steamworks)
                 curl -sL "https://raw.githubusercontent.com/KyleSanderson/SteamWorks/master/Pawn/includes/SteamWorks.inc" -o "$INCLUDE_DIR/SteamWorks.inc"
                 echo "steamworks" >> "$TRACK_FILE"
                 echo "✅ Installed: include/SteamWorks.inc"
-                ;;
-
-            ptah)
-                curl -sL "https://raw.githubusercontent.com/komashchenko/PTaH/master/scripting/include/ptah.inc" -o "$INCLUDE_DIR/ptah.inc"
-                echo "ptah" >> "$TRACK_FILE"
-                echo "✅ Installed: include/ptah.inc"
-                ;;
-
-            sourcecolors)
-                curl -sL "https://raw.githubusercontent.com/Flyflo/SourceColors/master/addons/sourcemod/scripting/include/sourcecolors.inc" -o "$INCLUDE_DIR/sourcecolors.inc"
-                echo "sourcecolors" >> "$TRACK_FILE"
-                echo "✅ Installed: include/sourcecolors.inc"
                 ;;
 
             discord)
@@ -148,13 +179,50 @@ EOF
                 echo "✅ Installed: include/discord.inc"
                 ;;
 
+            sourcescramble)
+                curl -sL "https://raw.githubusercontent.com/nosoop/SMExt-SourceScramble/master/pawn/sourcescramble.inc" -o "$INCLUDE_DIR/sourcescramble.inc"
+                echo "sourcescramble" >> "$TRACK_FILE"
+                echo "✅ Installed: include/sourcescramble.inc"
+                ;;
+
+            dhooks)
+                curl -sL "https://raw.githubusercontent.com/alliedmodders/sourcemod/master/plugins/include/dhooks.inc" -o "$INCLUDE_DIR/dhooks.inc" 2>/dev/null || \
+                curl -sL "https://raw.githubusercontent.com/peace-maker/sourcemod/master/plugins/include/dhooks.inc" -o "$INCLUDE_DIR/dhooks.inc"
+                echo "dhooks" >> "$TRACK_FILE"
+                echo "✅ Installed: include/dhooks.inc"
+                ;;
+
+            collisionhook)
+                curl -sL "https://raw.githubusercontent.com/nosoop/SM-CollisionHook/master/pawn/collisionhook.inc" -o "$INCLUDE_DIR/collisionhook.inc"
+                echo "collisionhook" >> "$TRACK_FILE"
+                echo "✅ Installed: include/collisionhook.inc"
+                ;;
+
+            sendproxy)
+                curl -sL "https://raw.githubusercontent.com/komashchenko/SendProxy/master/pawn/sendproxy.inc" -o "$INCLUDE_DIR/sendproxy.inc"
+                echo "sendproxy" >> "$TRACK_FILE"
+                echo "✅ Installed: include/sendproxy.inc"
+                ;;
+
+            ptah)
+                curl -sL "https://raw.githubusercontent.com/komashchenko/PTaH/master/scripting/include/ptah.inc" -o "$INCLUDE_DIR/ptah.inc"
+                echo "ptah" >> "$TRACK_FILE"
+                echo "✅ Installed: include/ptah.inc"
+                ;;
+
+            tf2items)
+                curl -sL "https://raw.githubusercontent.com/nosoop/SM-TF2Items/master/pawn/tf2items.inc" -o "$INCLUDE_DIR/tf2items.inc" 2>/dev/null || \
+                curl -sL "https://raw.githubusercontent.com/alliedmodders/sourcemod/master/plugins/include/tf2items.inc" -o "$INCLUDE_DIR/tf2items.inc"
+                echo "tf2items" >> "$TRACK_FILE"
+                echo "✅ Installed: include/tf2items.inc"
+                ;;
+
             *)
                 echo "❌ Unknown package '$PKG'. Search available packages with: ./sm-pkg.sh search"
                 exit 1
                 ;;
         esac
 
-        # Remove duplicates from track file
         sort -u "$TRACK_FILE" -o "$TRACK_FILE"
         ;;
 
@@ -165,33 +233,24 @@ EOF
         fi
 
         case "$PKG" in
-            multicolors)
-                rm -rf "$INCLUDE_DIR/multicolors.inc" "$INCLUDE_DIR/multicolors"
-                ;;
-            morecolors)
-                rm -f "$INCLUDE_DIR/morecolors.inc"
-                ;;
-            autoexecconfig)
-                rm -f "$INCLUDE_DIR/autoexecconfig.inc"
-                ;;
-            ripext)
-                rm -f "$INCLUDE_DIR/ripext.inc"
-                ;;
-            steamworks)
-                rm -f "$INCLUDE_DIR/SteamWorks.inc"
-                ;;
-            ptah)
-                rm -f "$INCLUDE_DIR/ptah.inc"
-                ;;
-            sourcecolors)
-                rm -f "$INCLUDE_DIR/sourcecolors.inc"
-                ;;
-            discord)
-                rm -f "$INCLUDE_DIR/discord.inc"
-                ;;
-            *)
-                rm -f "$INCLUDE_DIR/$PKG" "$INCLUDE_DIR/$PKG.inc"
-                ;;
+            multicolors)    rm -rf "$INCLUDE_DIR/multicolors.inc" "$INCLUDE_DIR/multicolors" ;;
+            morecolors)     rm -f "$INCLUDE_DIR/morecolors.inc" ;;
+            sourcecolors)   rm -f "$INCLUDE_DIR/sourcecolors.inc" ;;
+            smlib)          rm -rf "$INCLUDE_DIR/smlib.inc" "$INCLUDE_DIR/smlib" ;;
+            autoexecconfig) rm -f "$INCLUDE_DIR/autoexecconfig.inc" ;;
+            updater)        rm -f "$INCLUDE_DIR/updater.inc" ;;
+            ripext)         rm -f "$INCLUDE_DIR/ripext.inc" ;;
+            json)           rm -f "$INCLUDE_DIR/json.inc" ;;
+            smjansson)      rm -f "$INCLUDE_DIR/smjansson.inc" ;;
+            steamworks)     rm -f "$INCLUDE_DIR/SteamWorks.inc" ;;
+            discord)        rm -f "$INCLUDE_DIR/discord.inc" ;;
+            sourcescramble) rm -f "$INCLUDE_DIR/sourcescramble.inc" ;;
+            dhooks)         rm -f "$INCLUDE_DIR/dhooks.inc" ;;
+            collisionhook)  rm -f "$INCLUDE_DIR/collisionhook.inc" ;;
+            sendproxy)      rm -f "$INCLUDE_DIR/sendproxy.inc" ;;
+            ptah)           rm -f "$INCLUDE_DIR/ptah.inc" ;;
+            tf2items)       rm -f "$INCLUDE_DIR/tf2items.inc" ;;
+            *)              rm -f "$INCLUDE_DIR/$PKG" "$INCLUDE_DIR/$PKG.inc" ;;
         esac
 
         grep -v "^$PKG" "$TRACK_FILE" > "${TRACK_FILE}.tmp" || true

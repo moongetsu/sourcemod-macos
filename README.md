@@ -74,9 +74,24 @@ Switch the active compiler and default includes on-the-fly:
 ./sm-switch.sh 1.13    # Switch to SourceMod 1.13
 ```
 
----
+## 📦 Package & Include Manager (`sm-pkg`)
 
-## 🛠 Workspace Guide
+Install top community libraries and stocks directly into `include/` with one command:
+
+```bash
+# Install popular libraries
+./sm-pkg.sh install smlib            # 300+ helper stocks and utilities
+./sm-pkg.sh install multicolors      # Chat coloring engine with drivers
+./sm-pkg.sh install ripext           # REST in Pawn (HTTP & JSON)
+./sm-pkg.sh install autoexecconfig   # Automatic config generator
+./sm-pkg.sh install steamworks       # SteamWorks extension include
+./sm-pkg.sh install sourcescramble   # Memory patcher & detour toolkit
+
+# Search and manage packages
+./sm-pkg.sh search [query]
+./sm-pkg.sh list
+./sm-pkg.sh remove <package>
+```
 
 ### Directory Layout
 
