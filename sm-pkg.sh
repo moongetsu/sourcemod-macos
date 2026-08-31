@@ -24,16 +24,19 @@ show_help() {
     echo "  search [query]  Search curated package registry"
     echo ""
     echo "Categories of Curated Packages:"
-    echo "  🎨 Chat & Colors:     multicolors, morecolors, sourcecolors, cstrike_colors"
-    echo "  ⚙️ Utilities & Stocks: smlib, autoexecconfig, updater, smjansson, json, emit_sound_any"
-    echo "  🌐 Web & Networking:  ripext, steamworks, socket, discord, geoip2"
-    echo "  🧠 Memory & Detours:  sourcescramble, dhooks, collisionhook, sendproxy"
-    echo "  🎮 Game Extensions:   ptah, left4dhooks, tf2items, store"
+    echo "  🎨 Chat & Colors:       multicolors, morecolors, sourcecolors, csgocolors"
+    echo "  ⚙️ Utilities & Stocks:   smlib, autoexecconfig, updater, smjansson, json, emit_sound_any"
+    echo "  🌐 Web & Networking:    ripext, steamworks, socket, discord, geoip2"
+    echo "  🛡️ Admin & Moderation:  sourcebanspp, sourcecomms, basecomm"
+    echo "  🏆 Competitive & PUG:   pugsetup, retakes, practicemode, mapchooser_ext"
+    echo "  🧠 Memory & Detours:    sourcescramble, dhooks, collisionhook, sendproxy"
+    echo "  🎮 Game Extensions:     ptah, left4dhooks, tf2items, store, rankme"
     echo ""
     echo "Examples:"
+    echo "  ./sm-pkg.sh install pugsetup"
+    echo "  ./sm-pkg.sh install sourcebanspp"
+    echo "  ./sm-pkg.sh install retakes"
     echo "  ./sm-pkg.sh install smlib"
-    echo "  ./sm-pkg.sh install multicolors"
-    echo "  ./sm-pkg.sh install ripext"
     echo "  ./sm-pkg.sh install https://example.com/myinclude.inc"
     echo ""
 }
@@ -67,6 +70,7 @@ case "$CMD" in
 multicolors      - Multi-Colors chat formatting library with CS:GO/MoreColors drivers (Bara20)
 morecolors       - MoreColors chat formatting library (Doctor McKay)
 sourcecolors     - Lightweight cross-game color formatting library (Flyflo)
+csgocolors       - Classic CS:GO chat color parser (exvel/Bara)
 smlib            - SourceMod Library with 300+ helper stocks and utilities (bcserv)
 autoexecconfig   - Automatic config file generator and cvar synchronizer (Impact)
 updater          - In-game automated plugin updater system (GoD-Tony/DoctorMcKay)
@@ -77,6 +81,13 @@ steamworks       - Native SteamWorks extension include (KyleSanderson)
 socket           - Raw TCP/UDP Socket extension header (sfPlayer)
 discord          - Discord Webhooks and Rich Embed integration library (CrazyHackGMod)
 geoip2           - MaxMind GeoIP2 country/city lookup extension headers (komashchenko)
+sourcebanspp     - SourceBans++ admin & ban management API headers (sbpp)
+sourcecomms      - SourceComms communication management (mute/gag) headers (sbpp)
+pugsetup         - CS:GO PUG Setup & match system API include (splewis)
+retakes          - CS:GO Retakes gamemode API include (splewis)
+practicemode     - CS:GO Practice Mode API include (splewis)
+mapchooser_ext   - MapChooser Extended map voting API include (Powerlord/RRimmer)
+rankme           - RankMe / Kento-RankMe statistics API include (rogeraabbccdd)
 sourcescramble   - Dynamic memory patcher and detour manager (nosoop)
 dhooks           - Dynamic Hooks extension header for detour and vtable hooks
 collisionhook    - Entity collision override hook extension (nosoop/AlliedMods)
@@ -129,6 +140,12 @@ EOF
                 curl -sL "https://raw.githubusercontent.com/Flyflo/SourceColors/master/addons/sourcemod/scripting/include/sourcecolors.inc" -o "$INCLUDE_DIR/sourcecolors.inc"
                 echo "sourcecolors" >> "$TRACK_FILE"
                 echo "✅ Installed: include/sourcecolors.inc"
+                ;;
+
+            csgocolors)
+                curl -sL "https://raw.githubusercontent.com/Bara/Multi-Colors/master/addons/sourcemod/scripting/include/multicolors/csgo_colors.inc" -o "$INCLUDE_DIR/csgocolors.inc"
+                echo "csgocolors" >> "$TRACK_FILE"
+                echo "✅ Installed: include/csgocolors.inc"
                 ;;
 
             smlib)
@@ -195,6 +212,52 @@ EOF
                 curl -sL "https://raw.githubusercontent.com/komashchenko/GeoIP2/master/scripting/include/geoip2.inc" -o "$INCLUDE_DIR/geoip2.inc"
                 echo "geoip2" >> "$TRACK_FILE"
                 echo "✅ Installed: include/geoip2.inc"
+                ;;
+
+            sourcebanspp)
+                curl -sL "https://raw.githubusercontent.com/sbpp/sourcebans-pp/master/scripting/include/sourcebanspp.inc" -o "$INCLUDE_DIR/sourcebanspp.inc" 2>/dev/null || \
+                curl -sL "https://raw.githubusercontent.com/SourceBans/sourcebans-pp/master/scripting/include/sourcebanspp.inc" -o "$INCLUDE_DIR/sourcebanspp.inc"
+                echo "sourcebanspp" >> "$TRACK_FILE"
+                echo "✅ Installed: include/sourcebanspp.inc"
+                ;;
+
+            sourcecomms)
+                curl -sL "https://raw.githubusercontent.com/sbpp/sourcebans-pp/master/scripting/include/sourcecomms.inc" -o "$INCLUDE_DIR/sourcecomms.inc" 2>/dev/null || \
+                curl -sL "https://raw.githubusercontent.com/SourceBans/sourcebans-pp/master/scripting/include/sourcecomms.inc" -o "$INCLUDE_DIR/sourcecomms.inc"
+                echo "sourcecomms" >> "$TRACK_FILE"
+                echo "✅ Installed: include/sourcecomms.inc"
+                ;;
+
+            pugsetup)
+                curl -sL "https://raw.githubusercontent.com/splewis/csgo-pug-setup/master/scripting/include/pugsetup.inc" -o "$INCLUDE_DIR/pugsetup.inc"
+                echo "pugsetup" >> "$TRACK_FILE"
+                echo "✅ Installed: include/pugsetup.inc"
+                ;;
+
+            retakes)
+                curl -sL "https://raw.githubusercontent.com/splewis/csgo-retakes/master/scripting/include/retakes.inc" -o "$INCLUDE_DIR/retakes.inc"
+                echo "retakes" >> "$TRACK_FILE"
+                echo "✅ Installed: include/retakes.inc"
+                ;;
+
+            practicemode)
+                curl -sL "https://raw.githubusercontent.com/splewis/csgo-practice-mode/master/scripting/include/practicemode.inc" -o "$INCLUDE_DIR/practicemode.inc"
+                echo "practicemode" >> "$TRACK_FILE"
+                echo "✅ Installed: include/practicemode.inc"
+                ;;
+
+            mapchooser_ext)
+                curl -sL "https://raw.githubusercontent.com/Powerlord/MapChooser-Extended/master/scripting/include/mapchooser_extended.inc" -o "$INCLUDE_DIR/mapchooser_extended.inc" 2>/dev/null || \
+                curl -sL "https://raw.githubusercontent.com/RRimmer/MapChooser-Extended/master/scripting/include/mapchooser_extended.inc" -o "$INCLUDE_DIR/mapchooser_extended.inc"
+                echo "mapchooser_ext" >> "$TRACK_FILE"
+                echo "✅ Installed: include/mapchooser_extended.inc"
+                ;;
+
+            rankme)
+                curl -sL "https://raw.githubusercontent.com/rogeraabbccdd/Kento-Rankme/master/scripting/include/kento_rankme.inc" -o "$INCLUDE_DIR/kento_rankme.inc" 2>/dev/null || \
+                curl -sL "https://raw.githubusercontent.com/rogeraabbccdd/Kento-Rankme/master/scripting/include/kento_csgocolors.inc" -o "$INCLUDE_DIR/kento_csgocolors.inc"
+                echo "rankme" >> "$TRACK_FILE"
+                echo "✅ Installed: include/kento_rankme.inc"
                 ;;
 
             sourcescramble)
@@ -273,6 +336,7 @@ EOF
             multicolors)    rm -rf "$INCLUDE_DIR/multicolors.inc" "$INCLUDE_DIR/multicolors" ;;
             morecolors)     rm -f "$INCLUDE_DIR/morecolors.inc" ;;
             sourcecolors)   rm -f "$INCLUDE_DIR/sourcecolors.inc" ;;
+            csgocolors)     rm -f "$INCLUDE_DIR/csgocolors.inc" ;;
             smlib)          rm -rf "$INCLUDE_DIR/smlib.inc" "$INCLUDE_DIR/smlib" ;;
             autoexecconfig) rm -f "$INCLUDE_DIR/autoexecconfig.inc" ;;
             updater)        rm -f "$INCLUDE_DIR/updater.inc" ;;
@@ -283,6 +347,13 @@ EOF
             socket)         rm -f "$INCLUDE_DIR/socket.inc" ;;
             discord)        rm -f "$INCLUDE_DIR/discord.inc" ;;
             geoip2)         rm -f "$INCLUDE_DIR/geoip2.inc" ;;
+            sourcebanspp)   rm -f "$INCLUDE_DIR/sourcebanspp.inc" ;;
+            sourcecomms)    rm -f "$INCLUDE_DIR/sourcecomms.inc" ;;
+            pugsetup)       rm -f "$INCLUDE_DIR/pugsetup.inc" ;;
+            retakes)        rm -f "$INCLUDE_DIR/retakes.inc" ;;
+            practicemode)   rm -f "$INCLUDE_DIR/practicemode.inc" ;;
+            mapchooser_ext) rm -f "$INCLUDE_DIR/mapchooser_extended.inc" ;;
+            rankme)         rm -f "$INCLUDE_DIR/kento_rankme.inc" "$INCLUDE_DIR/kento_csgocolors.inc" ;;
             sourcescramble) rm -f "$INCLUDE_DIR/sourcescramble.inc" ;;
             dhooks)         rm -f "$INCLUDE_DIR/dhooks.inc" ;;
             collisionhook)  rm -f "$INCLUDE_DIR/collisionhook.inc" ;;
