@@ -101,7 +101,7 @@ cd "$SP_DIR"
 
 if [ "$SM_VER" = "1.10" ]; then
     cd "$BUILD_DIR"
-    python3 ../configure.py --enable-optimize
+    python3 ../configure.py --enable-optimize --build="spcomp"
 else
     python3 configure.py --out build-macos --targets=x86_64,arm64
     cd "$BUILD_DIR"
