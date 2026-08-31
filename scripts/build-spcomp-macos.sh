@@ -83,16 +83,15 @@ if [ -f "$AM_STRING_H" ]; then
     perl -pi -e 's/return nullptr;/return 0;/g' "$AM_STRING_H"
 fi
 
-# Patch AMBuildScript warnings-as-errors & deprecations
-AMBUILDSCRIPT="$SP_DIR/AMBuildScript"
-if [ -f "$AMBUILDSCRIPT" ]; then
-    perl -pi -e "s/'-Werror',/'-Wno-error',\n            '-Wno-deprecated-declarations',\n            '-Wno-nonnull',/g" "$AMBUILDSCRIPT"
-    perl -pi -e "s/\['-std=c\+\+17'\]/\['-std=c\+\+17', '-Wno-deprecated-declarations', '-Wno-nonnull'\]/g" "$AMBUILDSCRIPT"
-    perl -pi -e "s/\['-std=c\+\+20'\]/\['-std=c\+\+20', '-Wno-deprecated-declarations', '-Wno-nonnull'\]/g" "$AMBUILDSCRIPT"
-    perl -pi -e "s/'-msse',//g" "$AMBUILDSCRIPT"
-    perl -pi -e 's/have_gcc = cxx\.family is '\''gcc'\''/have_gcc = cxx.family == '\''gcc'\''/g' "$AMBUILDSCRIPT"
-    perl -pi -e 's/cxx\.family is /cxx.family == /g' "$AMBUILDSCRIPT"
-fi
+# Patch AMBuildScript warnings-as-errors & deprecations across all build scripts
+find "$SM_DIR" -name "AMBuildScript" -o -name "*.py" | while read -r script_file; do
+    perl -pi -e "s/'-Werror',/'-Wno-error',\n            '-Wno-deprecated-declarations',\n            '-Wno-nonnull',/g" "$script_file"
+    perl -pi -e "s/\['-std=c\+\+17'\]/\['-std=c\+\+17', '-Wno-deprecated-declarations', '-Wno-nonnull'\]/g" "$script_file"
+    perl -pi -e "s/\['-std=c\+\+20'\]/\['-std=c\+\+20', '-Wno-deprecated-declarations', '-Wno-nonnull'\]/g" "$script_file"
+    perl -pi -e "s/'-msse',?//g" "$script_file"
+    perl -pi -e "s/'-m32',?//g" "$script_file"
+    perl -pi -e 's/cxx\.family is /cxx.family == /g' "$script_file"
+done
 
 # 4. Build Universal Binary
 echo "⚙️  [4/5] Building Universal spcomp-$SM_VER..."
