@@ -13,3 +13,7 @@ ambuild/
 
 # Output
 compiled/*.smx
+
+# IDE
+.vscode/
+
