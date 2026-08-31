@@ -88,9 +88,9 @@ find "$SM_DIR" -name "AMBuildScript" -o -name "*.py" | while read -r script_file
     perl -pi -e "s/'-Werror',/'-Wno-error',\n            '-Wno-deprecated-declarations',\n            '-Wno-nonnull',/g" "$script_file"
     perl -pi -e "s/\['-std=c\+\+17'\]/\['-std=c\+\+17', '-Wno-deprecated-declarations', '-Wno-nonnull'\]/g" "$script_file"
     perl -pi -e "s/\['-std=c\+\+20'\]/\['-std=c\+\+20', '-Wno-deprecated-declarations', '-Wno-nonnull'\]/g" "$script_file"
-    perl -pi -e "s/'-msse',?//g" "$script_file"
-    perl -pi -e "s/'-m32',?//g" "$script_file"
-    perl -pi -e 's/cxx\.family is /cxx.family == /g' "$script_file"
+    perl -pi -e "s/compiler\.cflags \+= \['-msse'\]/pass/g" "$script_file"
+    perl -pi -e "s/gccarch = '-m32'/gccarch = '-m64'/g" "$script_file"
+    perl -pi -e "s/cxx\.family is /cxx.family == /g" "$script_file"
 done
 
 # 4. Build Universal Binary
