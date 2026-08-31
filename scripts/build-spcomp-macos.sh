@@ -80,7 +80,7 @@ fi
 # Patch AMTL am-string.h nullptr issue in older branches
 AM_STRING_H="$SP_DIR/third_party/amtl/amtl/am-string.h"
 if [ -f "$AM_STRING_H" ]; then
-    perl -pi -e 's/return nullptr;/return (const CharType\*)0;/g' "$AM_STRING_H"
+    perl -pi -e 's/return nullptr;/return 0;/g' "$AM_STRING_H"
 fi
 
 # Patch AMBuildScript warnings-as-errors & deprecations
@@ -96,8 +96,15 @@ echo "⚙️  [4/5] Building Universal spcomp-$SM_VER..."
 BUILD_DIR="$SP_DIR/build-macos"
 mkdir -p "$BUILD_DIR"
 cd "$SP_DIR"
-python3 configure.py --out build-macos --targets=x86_64,arm64
-cd "$BUILD_DIR"
+
+if [ "$SM_VER" = "1.10" ]; then
+    cd "$BUILD_DIR"
+    python3 ../configure.py --targets=x86_64,arm64
+else
+    python3 configure.py --out build-macos --targets=x86_64,arm64
+    cd "$BUILD_DIR"
+fi
+
 ambuild
 
 # 5. Collect outputs
