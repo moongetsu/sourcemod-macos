@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="https://avatars.githubusercontent.com/u/1044439?s=200&v=4" width="64" alt="SourceMod Logo"/>
+  <img src="https://camo.githubusercontent.com/ef4460ecda0af3558932f64df3b4c98b2db5249bee6c38a3391fb979e2dfe99f/68747470733a2f2f696d616765732e67616d6562616e616e612e636f6d2f696d672f69636f2f7370726179732f6e617275746f2e676966" width="64" alt="Icon"/>
   <br />
   SourceMod macOS Compiler
 </h1>
